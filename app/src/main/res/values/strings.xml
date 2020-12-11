@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">DnDeck</string>
+    <string name="load_game">Load Game</string>
+    <string name="new_game">New Game</string>
+
+    <!-- new game activity -->
+    <string name="playerName">Name</string>
+    <string name="playerRace">Race :</string>
+    <string name="playerClass">Class :</string>
+    <string name="rollAttributes">Roll Attributes</string>
+    <string name="playerStr">Strength :</string>
+    <string name="playerDex">Dexterity :</string>
+    <string name="playerCon">Constitution :</string>
+    <string name="playerInt">Intelligence :</string>
+    <string name="playerWis">Wisdom :</string>
+    <string name="playerCha">Charisma :</string>
+    <string name="playerHP">Hit points :</string>
+    <string name="start">Start Game</string>
+    <string name="next">Next</string>
+
+    <string name="invalidName">Enter a character name !</string>
+    <string name="noClass">Choose a character class !</string>
+    <string name="noRace">Choose a character race !</string>
+    <string name="noAttributes">Roll and distribute your attributes !</string>
+    <string name="matchingAttributes">You must distribute every result only once !</string>
+
+    <!-- races activity -->
+    <string name="playerRaces">Races</string>
+    <string name="chooseRace">Choose Race</string>
+
+    <!-- classes activity -->
+    <string name="playerClasses">Classes</string>
+    <string name="chooseClass">Choose Class</string>
+
+    <!-- spells choice activity -->
+    <string name="playerSpells">Spells</string>
+    <string name="equipSpell">Equip Spell</string>
+    <string name="unequipSpell">Unequip Spell</string>
+    <string name="equippedSpells">Equipped Spells :</string>
+    <string name="loading">(Loading)</string>
+
+    <!-- equipment choice activity -->
+    <string name="playerWeapons">Weapons</string>
+    <string name="equipWeapon">Equip Weapon</string>
+    <string name="unequipWeapon">Unequip Weapon</string>
+    <string name="equippedWeapons">Equipped Weapons :</string>
+
+    <!-- character activity -->
+    <string name="openDeck">Open deck</string>
+    <string name="backToGame">Back to Game</string>
+
+    <!-- decks activity -->
+    <string name="playerDecks">Deck</string>
+    <string name="backToCharacter">Back to Character</string>
+
+    <!-- combat activity -->
+    <string name="endTurn">End Turn</string>
+
+
+</resources>

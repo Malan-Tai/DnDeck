@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.NewGameActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="194dp"
+        tools:layout_editor_absoluteY="299dp">
+
+        <EditText
+            android:id="@+id/editCharacterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/playerName"
+            android:textSize="14pt" />
+
+        <Button
+            android:id="@+id/buttonRace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/playerRace" />
+
+        <Button
+            android:id="@+id/buttonClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/playerClass" />
+
+        <Button
+            android:id="@+id/buttonRollAttributes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rollAttributes" />
+
+        <TextView
+            android:id="@+id/textAttributesResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAlignment="center"
+            android:textSize="13pt" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:text="@string/playerStr"
+                    android:textSize="13pt" />
+
+                <TextView
+                    android:id="@+id/textDex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:text="@string/playerDex"
+                    android:textSize="13pt" />
+
+                <TextView
+                    android:id="@+id/textCon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:text="@string/playerCon"
+                    android:textSize="13pt" />
+
+                <TextView
+                    android:id="@+id/textInt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:text="@string/playerInt"
+                    android:textSize="13pt" />
+
+                <TextView
+                    android:id="@+id/textWis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:text="@string/playerWis"
+                    android:textSize="13pt" />
+
+                <TextView
+                    android:id="@+id/textCha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:text="@string/playerCha"
+                    android:textSize="13pt" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinnerStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:textSize="13pt" />
+
+                <Spinner
+                    android:id="@+id/spinnerDex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:textSize="13pt" />
+
+                <Spinner
+                    android:id="@+id/spinnerCon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:textSize="13pt" />
+
+                <Spinner
+                    android:id="@+id/spinnerInt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:textSize="13pt" />
+
+                <Spinner
+                    android:id="@+id/spinnerWis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:textSize="13pt" />
+
+                <Spinner
+                    android:id="@+id/spinnerCha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:textSize="13pt" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/textHP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/playerHP"
+        android:textSize="13pt"
+        app:layout_constraintBottom_toTopOf="@+id/buttonStart"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

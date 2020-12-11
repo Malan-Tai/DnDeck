@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SpellChoiceActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="149dp"
+        tools:layout_editor_absoluteY="247dp">
+
+        <TextView
+            android:id="@+id/textSpells"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt"
+            android:text="@string/playerSpells" />
+
+        <ListView
+            android:id="@+id/listSpells"
+            android:layout_width="match_parent"
+            android:layout_height="273dp" />
+
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13pt"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+        <Button
+            android:id="@+id/buttonToggleSpell"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/equipSpell" />
+
+        <TextView
+            android:id="@+id/textEquippedSpells"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12pt"
+            android:text="@string/equippedSpells" />
+
+        <ListView
+            android:id="@+id/listEquippedSpells"
+            android:layout_width="match_parent"
+            android:layout_height="205dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@id/buttonStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3" />
+</androidx.constraintlayout.widget.ConstraintLayout>

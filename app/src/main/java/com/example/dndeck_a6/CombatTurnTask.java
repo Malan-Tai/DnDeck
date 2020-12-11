@@ -1,6 +1,7 @@
 package com.example.dndeck_a6;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.GridView;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dndeck_a6.activities.CombatActivity;
+import com.example.dndeck_a6.activities.EncounterChoiceActivity;
 import com.example.dndeck_a6.activities.MainActivity;
 import com.example.dndeck_a6.game.Card;
 import com.example.dndeck_a6.game.GameCharacter;
@@ -78,6 +80,18 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
         SpellCast spellCast = spellCasts[0];
         Log.i("Malan", spellCast.caster + " casts " + spellCast.spell.name + " with " + spellCast.card.code);
         spellCast.cast(context);
+
+        if (CombatActivity.monster.getHp() <= 0){
+            EncounterChoiceActivity.clearMonsters();
+            Intent intent = new Intent(context, EncounterChoiceActivity.class);
+            activityReference.get().startActivity(intent);
+            activityReference.get().finish();
+        }
+        else if (MainActivity.player.getHp() <= 0){
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            activityReference.get().startActivity(intent);
+        }
 
     }
 

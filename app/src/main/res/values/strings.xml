@@ -51,7 +51,13 @@
 
     <!-- decks activity -->
     <string name="playerDecks">Deck</string>
-    <string name="backToCharacter">Back to Character</string>
+    <string name="backToCharacter">Back to Character Sheet</string>
+
+    <!-- encounters choice -->
+    <string name="encountersChoice">Next Encounters</string>
+    <string name="monsterSpells">Monster Spells :</string>
+    <string name="characterSheet">Character Sheet</string>
+    <string name="chooseEncounter">Fight this monster</string>
 
     <!-- combat activity -->
     <string name="endTurn">End Turn</string>

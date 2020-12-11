@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -36,9 +37,9 @@ public class CombatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combat);
 
-        String url = "/api/monsters/adult-silver-dragon";
+        Bundle extras = getIntent().getExtras();
         DndParserTask monsterTask = new DndParserTask(this, getApplicationContext());
-        monsterTask.execute(url);
+        monsterTask.execute(extras.getString("url"));
         try{
             monsterTask.get();
         } catch (ExecutionException e){

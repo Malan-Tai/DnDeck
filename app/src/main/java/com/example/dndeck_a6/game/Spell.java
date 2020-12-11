@@ -80,17 +80,24 @@ public class Spell {
             try {
                 name = json.getString("name");
 
+                desc = "";
                 try {
                     attackBonus = json.getInt("attack_bonus");
+                    desc += "Attack bonus : +" + attackBonus + "\n";
 
                 } catch (JSONException e) {
 
                 }
 
+                desc += "Damage : ";
                 JSONArray dmgFields = json.getJSONArray("damage");
                 damageRolls = new String[dmgFields.length()];
                 for (int i = 0; i < dmgFields.length(); i++){
                     damageRolls[i] = dmgFields.getJSONObject(i).getString("damage_dice");
+                    desc += damageRolls[i] + " ";
+                    try {
+                        desc += dmgFields.getJSONObject(i).getJSONObject("damage_type").getString("name") + " ";
+                    } catch (JSONException e) {}
                 }
 
                 try {
@@ -98,6 +105,10 @@ public class Spell {
                     difficultyClassAbility = dc.getJSONObject("dc_type").getString("name");
                     difficultySuccess = dc.getString("success_type");
                     difficultyClass = dc.getInt("dc_value");
+
+                    desc += "\nIf player succeeds a " + difficultyClassAbility + " test of difficulty " + difficultyClass + ", it suffers ";
+                    if (difficultySuccess.equals("half")) desc += "half the damage. \n";
+                    else desc += "no damage. \n";
 
                 } catch (JSONException e) {
 

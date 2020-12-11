@@ -97,8 +97,9 @@ public class EquipmentChoiceActivity extends AppCompatActivity {
                     MainActivity.player.setWeapons(weapons);
                     MainActivity.player.setSpellsSuits();
 
-                    Intent intent = new Intent(getApplicationContext(), CharacterActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), EncounterChoiceActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }
         });

@@ -95,12 +95,14 @@ public class SpellChoiceActivity extends AppCompatActivity {
                     if (spells.length == 4){
                         MainActivity.player.setSpellsSuits();
 
-                        Intent intent = new Intent(getApplicationContext(), CharacterActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), EncounterChoiceActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                     else {
                         Intent intent = new Intent(getApplicationContext(), EquipmentChoiceActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                 }
             }

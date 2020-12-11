@@ -16,6 +16,7 @@ public class GameCharacter {
     public static int[] modifiers = new int[31];
 
     protected String name;
+    private String desc = "";
 
     protected Spell[] spells;
     protected int[] attributes;
@@ -24,6 +25,8 @@ public class GameCharacter {
     protected int hp;
 
     protected int armorClass;
+
+    private String url;
 
     private String deckCodes = "AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH";
 
@@ -57,6 +60,8 @@ public class GameCharacter {
             maxHP = Utils.rollDice(json.getString("hit_dice")) + modifiers[attributes[2]];
             hp = maxHP;
 
+            url = json.getString("url");
+
             ArrayList<Spell> tempSpells = new ArrayList<>();
             JSONArray actions = json.getJSONArray("actions");
             for (int i = 0; i < actions.length(); i++){
@@ -78,6 +83,11 @@ public class GameCharacter {
             setSpellsSuits();
 
             cardsToPlay = new ArrayList<>();
+
+            desc += json.getString("size") + " " + json.getString("type") + " of difficulty " + json.getString("challenge_rating") + "\n";
+            desc += "Average HP : " + json.getInt("hit_points") + " | Armor class : " + json.getString("armor_class") + "\n";
+            desc += "STR : " + attributes[0] + " | " + "DEX : " + attributes[1] + " | " + "CON : " + attributes[3] + "\n";
+            desc += "INT : " + attributes[3] + " | " + "WIS : " + attributes[4] + " | " + "CHA : " + attributes[5] + "\n";
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -153,6 +163,12 @@ public class GameCharacter {
     public String getName() { return name; }
 
     public String getHpText() { return hp + " / " + maxHP; }
+
+    public int getHp() { return hp; }
+
+    public String getDescription() { return desc; }
+
+    public String getUrl() { return url; }
 
     public String getDeckCodes() { return deckCodes; }
 

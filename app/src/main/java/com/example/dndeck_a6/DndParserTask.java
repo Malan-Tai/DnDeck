@@ -12,7 +12,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dndeck_a6.activities.CombatActivity;
+import com.example.dndeck_a6.activities.EncounterChoiceActivity;
 import com.example.dndeck_a6.activities.EquipmentChoiceActivity;
+import com.example.dndeck_a6.activities.MainActivity;
 import com.example.dndeck_a6.activities.PlayerClassActivity;
 import com.example.dndeck_a6.activities.PlayerRaceActivity;
 import com.example.dndeck_a6.activities.SpellChoiceActivity;
@@ -111,8 +113,12 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
                         break;
 
                     case "monsters":
-                        if (urlDetails.length == 4){ // /api/monsters/xxx aka a given monster
+                        if (urlDetails.length == 3){ // /api/monsters/ aka all monsters
+                            MainActivity.setAllMonsters(json.getJSONArray("results"));
+                        }
+                        else if (urlDetails.length == 4){ // /api/monsters/xxx aka a given monster
                             CombatActivity.monster = new GameCharacter(json);
+                            EncounterChoiceActivity.addNewMonster(json);
                             try{
                                 getMonsterImage(json.getString("index"));
                             }
@@ -493,6 +499,13 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
                     TextView weaponDesc = (TextView) activityReference.get().findViewById(R.id.textDesc);
                     String desc = "";
 
+                    if (json.getString("weapon_range").equals("Melee")){
+                        desc += "Melee weapon (uses STR to hit)\n";
+                    }
+                    else{
+                        desc += "Ranged weapon (uses DEX to hit)\n";
+                    }
+
                     JSONObject dmg = json.getJSONObject("damage");
                     desc += "Damage : " + dmg.getString("damage_dice");
                     try {
@@ -599,6 +612,7 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
         monsterIndex = monsterIndex.replaceAll("adult-", "");
         monsterIndex = monsterIndex.replaceAll("young-", "");
         monsterIndex = monsterIndex.replaceAll("ancient-", "");
+        monsterIndex = monsterIndex.replaceAll("-wyrmling", "");
         String aidedd = "https://www.aidedd.org/dnd/images/";
         String urlString = aidedd + monsterIndex + ".jpg";
 
@@ -639,7 +653,7 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
             }
         }
 
-        if (bitmap != null){
+        if (bitmap != null && image != null){
             final Bitmap bitmapRes = bitmap;
             activityReference.get().runOnUiThread(new Runnable() {
                 @Override

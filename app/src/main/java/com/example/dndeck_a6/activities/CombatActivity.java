@@ -1,5 +1,6 @@
 package com.example.dndeck_a6.activities;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -20,6 +21,7 @@ import com.example.dndeck_a6.CombatTurnTask;
 import com.example.dndeck_a6.DeckParserTask;
 import com.example.dndeck_a6.DndParserTask;
 import com.example.dndeck_a6.R;
+import com.example.dndeck_a6.Utils;
 import com.example.dndeck_a6.game.Card;
 import com.example.dndeck_a6.game.GameCharacter;
 
@@ -51,6 +53,10 @@ public class CombatActivity extends AppCompatActivity {
             e.printStackTrace();
             finish();
         }
+
+        MainActivity.currentSave.savedActivity = Utils.SaveActivity.COMBAT_ACTIVITY;
+        MainActivity.currentSave.monster = monster;
+        MainActivity.currentSave.playerCurrentHP = MainActivity.player.getHp();
 
         DeckParserTask deckTask1 = new DeckParserTask(this, getApplicationContext());
         deckTask1.execute(MainActivity.playerDeckID + "/shuffle/?cards=" + MainActivity.player.getDeckCodes());
@@ -106,6 +112,18 @@ public class CombatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                MainActivity.saveGame();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     private void playerDraw(String id, CardImageAdapter playerAdapter, CardImageAdapter monsterAdapter){

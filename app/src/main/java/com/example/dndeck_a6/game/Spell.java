@@ -1,6 +1,7 @@
 package com.example.dndeck_a6.game;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.dndeck_a6.Utils;
@@ -23,6 +24,8 @@ public class Spell {
     protected String difficultyClassAbility = "";
     protected int difficultyClass = 15;
     protected String difficultySuccess = "";
+
+    protected String[] damageTypes = null;
 
     protected boolean player;
 
@@ -54,6 +57,7 @@ public class Spell {
                 }
                 try {
                     String dmgType = dmg.getJSONObject("damage_type").getString("name");
+                    damageTypes = new String[] { dmgType };
                     desc += " " + dmgType;
                 } catch (JSONException e) {
                 }
@@ -92,12 +96,15 @@ public class Spell {
                 desc += "Damage : ";
                 JSONArray dmgFields = json.getJSONArray("damage");
                 damageRolls = new String[dmgFields.length()];
+                damageTypes = new String[dmgFields.length()];
                 for (int i = 0; i < dmgFields.length(); i++){
                     damageRolls[i] = dmgFields.getJSONObject(i).getString("damage_dice");
                     desc += damageRolls[i] + " ";
                     try {
-                        desc += dmgFields.getJSONObject(i).getJSONObject("damage_type").getString("name") + " ";
-                    } catch (JSONException e) {}
+                        String dmgType = dmgFields.getJSONObject(i).getJSONObject("damage_type").getString("name");
+                        damageTypes[i] = dmgType;
+                        desc += dmgType + " ";
+                    } catch (JSONException e) { damageTypes[i] = ""; }
                 }
 
                 try {
@@ -130,6 +137,7 @@ public class Spell {
         else{
             target = MainActivity.player;
         }
+        if (target == null) return;
 
         boolean hit = false;
         if (difficultyClassAbility.equals("")){ // if the spell requires a hit roll and not an evade roll
@@ -167,5 +175,75 @@ public class Spell {
 
         Toast.makeText(context, name + " hit " + target.name + " for " + damage + " damage!", Toast.LENGTH_SHORT).show();
         target.takeDamage(damage);
+    }
+
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        Log.i("Malan", "converting to json : " + name);
+
+        /*if (player) {
+            try {
+                json.put("name", name);
+
+                JSONObject dmg = new JSONObject();
+                JSONObject dmgLvl = new JSONObject();
+                dmgLvl.put("1", damageRolls[0]);
+                dmg.put("damage_at_character_level", dmgLvl);
+
+                if (damageTypes != null){
+                    JSONObject dmgType = new JSONObject();
+                    dmgType.put("name", damageTypes[0]);
+                    dmg.put("damage_type", dmgType);
+                }
+                json.put("damage", dmg);
+
+                if (!difficultyClassAbility.equals("")){
+                    JSONObject dc = new JSONObject();
+                    JSONObject dcType = new JSONObject();
+                    dcType.put("name", difficultyClassAbility);
+                    dc.put("dc_type", dcType);
+                    dc.put("dc_success", difficultySuccess);
+                    json.put("dc", dc);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {*/
+        try {
+            json.put("name", name);
+
+            if (attackBonus != 0) json.put("attack_bonus", attackBonus);
+
+            JSONArray dmgFields = new JSONArray(); //json.getJSONArray("damage");
+            for (int i = 0; i < damageRolls.length; i++) {
+                JSONObject dmgField = new JSONObject();
+                dmgField.put("damage_dice", damageRolls[i]);
+
+                if (damageTypes != null && !damageTypes[i].equals("")){
+                    JSONObject dmgType = new JSONObject();
+                    dmgType.put("name", damageTypes[i]);
+                    dmgField.put("damage_type", dmgType);
+                }
+
+                dmgFields.put(dmgField);
+            }
+            json.put("damage", dmgFields);
+
+            if (!difficultyClassAbility.equals("")){
+                JSONObject dc = new JSONObject();
+                JSONObject dcType = new JSONObject();
+                dcType.put("name", difficultyClassAbility);
+                dc.put("dc_type", dcType);
+                dc.put("success_type", difficultySuccess);
+                dc.put("dc_value", difficultyClass);
+                json.put("dc", dc);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //}
+
+        return json;
     }
 }

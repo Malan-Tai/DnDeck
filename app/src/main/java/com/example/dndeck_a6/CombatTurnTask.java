@@ -55,7 +55,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
     protected Void doInBackground(Void... voids) {
         boolean actionsLeft = true;
 
-        while (actionsLeft){
+        while (actionsLeft && CombatActivity.monster != null){
             Card playerCard = MainActivity.player.popNextCard();
             if (playerCard != null){
                 discarded.add(playerCard);
@@ -81,13 +81,18 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
         Log.i("Malan", spellCast.caster + " casts " + spellCast.spell.name + " with " + spellCast.card.code);
         spellCast.cast(context);
 
+        if (CombatActivity.monster == null) return;
         if (CombatActivity.monster.getHp() <= 0){
+            MainActivity.player.gainXP(CombatActivity.monster.getXP());
             EncounterChoiceActivity.clearMonsters();
+            CombatActivity.monster = null;
             Intent intent = new Intent(context, EncounterChoiceActivity.class);
             activityReference.get().startActivity(intent);
             activityReference.get().finish();
         }
         else if (MainActivity.player.getHp() <= 0){
+            EncounterChoiceActivity.clearMonsters();
+            CombatActivity.monster = null;
             Intent intent = new Intent(context, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             activityReference.get().startActivity(intent);
@@ -96,6 +101,8 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
     }
 
     protected void onPostExecute(Void v) {
+        if (CombatActivity.monster == null) return;
+
         TextView playerDraw = (TextView)activityReference.get().findViewById(R.id.textPlayerDeckCount);
         String playerRemaining = playerDraw.getText().toString();
         Log.i("Malan", "player remaining : " + playerRemaining);

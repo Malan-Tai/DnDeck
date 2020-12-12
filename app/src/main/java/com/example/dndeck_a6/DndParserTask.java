@@ -117,7 +117,7 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
                             MainActivity.setAllMonsters(json.getJSONArray("results"));
                         }
                         else if (urlDetails.length == 4){ // /api/monsters/xxx aka a given monster
-                            CombatActivity.monster = new GameCharacter(json);
+                            if (CombatActivity.monster == null) CombatActivity.monster = new GameCharacter(json);
                             EncounterChoiceActivity.addNewMonster(json);
                             try{
                                 getMonsterImage(json.getString("index"));

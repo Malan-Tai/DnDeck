@@ -37,6 +37,7 @@ public class NewGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
 
+        EncounterChoiceActivity.clearMonsters();
         /*Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int[] extrasAttributes = extras.getIntArray("attributes");

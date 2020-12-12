@@ -1,5 +1,6 @@
 package com.example.dndeck_a6.activities;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.example.dndeck_a6.DndParserTask;
 import com.example.dndeck_a6.JsonAdapter;
 import com.example.dndeck_a6.R;
 import com.example.dndeck_a6.SpellAdapter;
+import com.example.dndeck_a6.Utils;
 import com.example.dndeck_a6.game.GameCharacter;
 import com.example.dndeck_a6.game.Spell;
 
@@ -33,7 +35,7 @@ public class EncounterChoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encounter_choice);
 
-        for (int i = 0; i < monsters.length; i++){
+        for (int i = createMonstersIndex; i < monsters.length; i++){
             JSONObject json = MainActivity.getRandomMonster();
             try {
                 DndParserTask task = new DndParserTask(this, getApplicationContext());
@@ -44,8 +46,12 @@ public class EncounterChoiceActivity extends AppCompatActivity {
         }
 
         while (createMonstersIndex < monsters.length){
-
+            Log.i("Malan", "in while");
         }
+
+        MainActivity.currentSave.savedActivity = Utils.SaveActivity.ENCOUNTER_ACTIVITY;
+        MainActivity.currentSave.monsters = monsters;
+        MainActivity.currentSave.playerCurrentHP = MainActivity.player.getHp();
 
         Button monsterBtn1 = (Button)findViewById(R.id.buttonMonster1);
         monsterBtn1.setText(monsters[0].getName());
@@ -96,6 +102,18 @@ public class EncounterChoiceActivity extends AppCompatActivity {
                 }
             }
         });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                MainActivity.saveGame();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     public static void addNewMonster(JSONObject json){

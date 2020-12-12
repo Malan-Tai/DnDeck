@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SpellAdapter  extends ArrayAdapter<Spell> {
+public class SpellAdapter extends ArrayAdapter<Spell> {
 
     public SpellAdapter(Context context, Spell[] spells) {
         super(context, 0, spells);

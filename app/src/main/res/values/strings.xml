@@ -62,5 +62,8 @@
     <!-- combat activity -->
     <string name="endTurn">End Turn</string>
 
+    <!-- load game activity -->
+    <string name="games">Saved Games</string>
+
 
 </resources>

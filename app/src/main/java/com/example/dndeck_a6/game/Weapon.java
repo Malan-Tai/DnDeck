@@ -35,6 +35,7 @@ public class Weapon extends Spell {
             damageRolls[0] = dmg.getString("damage_dice");
             try {
                 String dmgType = dmg.getJSONObject("damage_type").getString("name");
+                damageTypes = new String[] { dmgType };
                 desc += " " + dmgType;
             } catch (JSONException e) {
             }
@@ -47,6 +48,7 @@ public class Weapon extends Spell {
     @Override
     public void cast(Context context, int value) {
         GameCharacter target = CombatActivity.monster;
+        if (target == null) return;
 
         boolean hit = false;
         int hitRoll = 0;
@@ -73,5 +75,36 @@ public class Weapon extends Spell {
 
         Toast.makeText(context, name + " hit " + target.name + " for " + damage + " damage!", Toast.LENGTH_SHORT).show();
         target.takeDamage(damage);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("name", name);
+
+            if (abilityToHit.equals("STR")){
+                json.put("weapon_range", "Melee");
+            }
+            else{
+                json.put("weapon_range", "Ranged");
+            }
+
+            JSONObject dmg = new JSONObject();
+            dmg.put("damage_dice", damageRolls[0]);
+
+            if (damageTypes != null){
+                JSONObject dmgType = new JSONObject();
+                dmgType.put("name", damageTypes[0]);
+                dmg.put("damage_type", dmgType);
+            }
+            json.put("damage", dmg);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return json;
     }
 }

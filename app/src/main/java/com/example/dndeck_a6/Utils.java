@@ -6,6 +6,10 @@ import java.util.Random;
 
 public class Utils {
 
+    public enum SaveActivity {
+        COMBAT_ACTIVITY, ENCOUNTER_ACTIVITY, LEVEL_ACTIVITY
+    }
+
     public static Random random = new Random();
 
     public static int rollDie(int n){
@@ -14,7 +18,7 @@ public class Utils {
 
     public static int rollDice(String ndkpb){
         String[] values = ndkpb.split("d");
-        if (values.length == 1) return Integer.parseInt(values[0]); //if teh string is only "1" or "16" for example
+        if (values.length == 1) return Integer.parseInt(values[0]); //if the string is only "1" or "16" for example
 
         int n = Integer.parseInt(values[0]);
         int k = 0;

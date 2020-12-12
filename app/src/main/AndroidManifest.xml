@@ -11,7 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DnDeck_A6">
-        <activity android:name=".activities.EncounterChoiceActivity"
+        <activity
+            android:name=".activities.LoadGameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.EncounterChoiceActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CombatActivity"

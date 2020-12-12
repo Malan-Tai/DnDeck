@@ -13,7 +13,6 @@ public class PlayerClass {
 
     public JSONObject json;
 
-    public PlayerClass(){}
     public PlayerClass(JSONObject json){
         try{
             name = json.getString("name");
@@ -30,5 +29,27 @@ public class PlayerClass {
             Log.i("Malan", "JSONException");
             e.printStackTrace();
         }
+    }
+
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+
+        try{
+            json.put("name", name);
+            json.put("hit_die", hitDie);
+
+            if (!spellCastingAbility.equals("")){
+                JSONObject spellcasting = new JSONObject();
+                JSONObject ability = new JSONObject();
+                ability.put("name", spellCastingAbility);
+                spellcasting.put("spellcasting_abiility", ability);
+                json.put("spellcasting", spellcasting);
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return json;
     }
 }

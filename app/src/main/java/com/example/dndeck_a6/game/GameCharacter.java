@@ -26,7 +26,14 @@ public class GameCharacter {
 
     protected int armorClass;
 
-    private String url;
+    protected int xp = 0;
+
+    private String url = "";
+
+    private String size = "";
+    private String type = "";
+    private String difficulty = "";
+    private String avgHP = "";
 
     private String deckCodes = "AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH";
 
@@ -45,7 +52,7 @@ public class GameCharacter {
     public GameCharacter(JSONObject json){
         try{
             name = json.getString("name");
-            Log.i("Malan", "creating " + name);
+            Log.i("Malan", "creating " + name + " ; hp dice : " + json.getString("hit_dice"));
             armorClass = json.getInt("armor_class");
 
             attributes = new int[]{
@@ -62,13 +69,21 @@ public class GameCharacter {
 
             url = json.getString("url");
 
+            xp = json.getInt("xp");
+
             ArrayList<Spell> tempSpells = new ArrayList<>();
             JSONArray actions = json.getJSONArray("actions");
             for (int i = 0; i < actions.length(); i++){
                 JSONObject action = actions.getJSONObject(i);
-                JSONArray damageFields = action.getJSONArray("damage");
-                if (damageFields.length() > 0){
-                    tempSpells.add(new Spell(action, false));
+                try {
+                    String range = action.getString("weapon_range");
+                    tempSpells.add(new Weapon(action));
+                }
+                catch (JSONException e) {
+                    JSONArray damageFields = action.getJSONArray("damage");
+                    if (damageFields.length() > 0) {
+                        tempSpells.add(new Spell(action, false));
+                    }
                 }
             }
             List<Spell> tempList = tempSpells;
@@ -84,8 +99,12 @@ public class GameCharacter {
 
             cardsToPlay = new ArrayList<>();
 
-            desc += json.getString("size") + " " + json.getString("type") + " of difficulty " + json.getString("challenge_rating") + "\n";
-            desc += "Average HP : " + json.getInt("hit_points") + " | Armor class : " + json.getString("armor_class") + "\n";
+            size = json.getString("size");
+            type = json.getString("type");
+            difficulty = json.getString("challenge_rating");
+            avgHP = json.getString("hit_points");
+            desc += size + " " + type + " of difficulty " + difficulty + "\n";
+            desc += "Average HP : " + avgHP + " | Armor class : " + armorClass + "\n";
             desc += "STR : " + attributes[0] + " | " + "DEX : " + attributes[1] + " | " + "CON : " + attributes[3] + "\n";
             desc += "INT : " + attributes[3] + " | " + "WIS : " + attributes[4] + " | " + "CHA : " + attributes[5] + "\n";
         }
@@ -203,5 +222,46 @@ public class GameCharacter {
     public void takeDamage(int dmg){
         hp -= dmg;
         Log.i("Malan", name + " took " + dmg + " damage : " + getHpText());
+    }
+
+    public int getXP() { return xp; }
+
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        Log.i("Malan", "converting to json : " + name);
+
+        try{
+            json.put("name", name);
+            json.put("armor_class", armorClass);
+
+            json.put("strength", attributes[0]);
+            json.put("dexterity", attributes[1]);
+            json.put("constitution", attributes[2]);
+            json.put("intelligence", attributes[3]);
+            json.put("wisdom", attributes[4]);
+            json.put("charisma", attributes[5]);
+
+            json.put("hit_dice", maxHP - modifiers[attributes[2]]); //uses the fact that rollDice returns N if the string is only "N"
+
+            json.put("url", url);
+
+            json.put("xp", xp);
+
+            json.put("size", size);
+            json.put("type", type);
+            json.put("challenge_rating", difficulty);
+            json.put("hit_points", avgHP);
+
+            JSONArray actions = new JSONArray();
+            for (int i = 0; i < spells.length; i++) {
+                actions.put(spells[i].toJSON());
+            }
+            json.put("actions", actions);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return json;
     }
 }

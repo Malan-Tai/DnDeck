@@ -18,7 +18,8 @@ public class PlayerRace {
 
     public JSONObject json;
 
-    public PlayerRace() {}
+    public PlayerRace(String n) { name = n; }
+
     public PlayerRace(JSONObject json){
         try{
             name = json.getString("name");

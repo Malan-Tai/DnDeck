@@ -118,6 +118,8 @@ public class Player extends GameCharacter {
 
     public ArrayList<Card> getDeck() { return deck; }
 
+    public int getLevel() { return level; }
+
     @Override
     public String getDeckCodes(){
         String res = "";

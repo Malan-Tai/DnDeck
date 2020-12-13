@@ -3,7 +3,9 @@ package com.example.dndeck_a6.game;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.dndeck_a6.CardImageAdapter;
 import com.example.dndeck_a6.Utils;
+import com.example.dndeck_a6.activities.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +34,7 @@ public class GameCharacter {
 
     private String size = "";
     private String type = "";
-    private String difficulty = "";
+    private double difficulty = -1;
     private String avgHP = "";
 
     private String deckCodes = "AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH";
@@ -52,6 +54,10 @@ public class GameCharacter {
     public GameCharacter(JSONObject json){
         try{
             name = json.getString("name");
+            int n = name.indexOf("(");
+            if (n != -1){
+                name = name.substring(0, n);
+            }
             Log.i("Malan", "creating " + name + " ; hp dice : " + json.getString("hit_dice"));
             armorClass = json.getInt("armor_class");
 
@@ -71,37 +77,39 @@ public class GameCharacter {
 
             xp = json.getInt("xp");
 
-            ArrayList<Spell> tempSpells = new ArrayList<>();
-            JSONArray actions = json.getJSONArray("actions");
-            for (int i = 0; i < actions.length(); i++){
-                JSONObject action = actions.getJSONObject(i);
-                try {
-                    String range = action.getString("weapon_range");
-                    tempSpells.add(new Weapon(action));
-                }
-                catch (JSONException e) {
-                    JSONArray damageFields = action.getJSONArray("damage");
-                    if (damageFields.length() > 0) {
-                        tempSpells.add(new Spell(action, false));
+            try {
+                ArrayList<Spell> tempSpells = new ArrayList<>();
+                JSONArray actions = json.getJSONArray("actions");
+                for (int i = 0; i < actions.length(); i++) {
+                    JSONObject action = actions.getJSONObject(i);
+                    try {
+                        String range = action.getString("weapon_range");
+                        tempSpells.add(new Weapon(action));
+                    } catch (JSONException e) {
+                        JSONArray damageFields = action.getJSONArray("damage");
+                        if (damageFields.length() > 0) {
+                            tempSpells.add(new Spell(action, false));
+                        }
                     }
                 }
+                List<Spell> tempList = tempSpells;
+                if (tempSpells.size() > 4) {
+                    tempList = tempSpells.subList(0, 4);
+                }
+                spells = new Spell[tempList.size()];
+                for (int i = 0; i < spells.length; i++) {
+                    spells[i] = tempList.get(i);
+                    Log.i("Malan", "added spell " + spells[i].name);
+                }
+                setSpellsSuits();
             }
-            List<Spell> tempList = tempSpells;
-            if (tempSpells.size() > 4){
-                tempList = tempSpells.subList(0, 4);
-            }
-            spells = new Spell[tempList.size()];
-            for (int i = 0; i < spells.length; i++){
-                spells[i] = tempList.get(i);
-                Log.i("Malan", "added spell " + spells[i].name);
-            }
-            setSpellsSuits();
+            catch (JSONException e) { }
 
             cardsToPlay = new ArrayList<>();
 
             size = json.getString("size");
             type = json.getString("type");
-            difficulty = json.getString("challenge_rating");
+            difficulty = Double.parseDouble(json.getString("challenge_rating"));
             avgHP = json.getString("hit_points");
             desc += size + " " + type + " of difficulty " + difficulty + "\n";
             desc += "Average HP : " + avgHP + " | Armor class : " + armorClass + "\n";
@@ -114,6 +122,16 @@ public class GameCharacter {
     }
 
     public Spell[] getSpells() { return spells; }
+
+    public ArrayList<String> getSpellsSuits() {
+        ArrayList<String> res = new ArrayList<>();
+        if (spells == null) return res;
+
+        for (int i = 0; i < spells.length; i++){
+            res.add(spells[i].suit);
+        }
+        return res;
+    }
 
     public Spell getSpell(String suit){
         for (int i = 0; i < spells.length; i++){
@@ -192,6 +210,7 @@ public class GameCharacter {
     public String getDeckCodes() { return deckCodes; }
 
     public boolean toggleCardToPlay(Card card){
+        Log.i("Malan", name + " toggled " + card.code);
         if (card.selectedInHand){
             cardsToPlay.remove(card);
             card.selectedInHand = false;
@@ -263,5 +282,32 @@ public class GameCharacter {
         }
 
         return json;
+    }
+
+    public String chooseDeckToDrawFrom() {
+        if (difficulty <= 0) return MainActivity.playerDeckID;
+
+        double inPlayerDeck = 50.0 * spells.length * (double)MainActivity.player.getLevel() / (4 * difficulty);
+        int die = Utils.rollDie(100);
+        if (die <= inPlayerDeck) return MainActivity.playerDeckID;
+
+        return MainActivity.monsterDeckID;
+    }
+
+    public void chooseActions(CardImageAdapter adapter) {
+        ArrayList<String> usedSuits = getSpellsSuits();
+        while (cardsToPlay.size() < 3){
+            int max = -1;
+            Card maxCard = null;
+            for (int i = 0; i < adapter.getCount(); i++){
+                Card card = adapter.getItem(i);
+                if (card.value > max && !card.selectedInHand && usedSuits.contains(card.suit)){
+                    max = card.value;
+                    maxCard = card;
+                }
+            }
+            if (maxCard == null) return; //there is no more possible card to play
+            toggleCardToPlay(maxCard);
+        }
     }
 }

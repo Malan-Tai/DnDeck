@@ -18,6 +18,7 @@ public class SpellCast {
     }
 
     public void cast(Context context){
+        if (caster.getHp() <= 0) return;
         spell.cast(context, card.value);
         adapter.remove(card);
     }

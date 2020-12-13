@@ -117,7 +117,7 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
                             MainActivity.setAllMonsters(json.getJSONArray("results"));
                         }
                         else if (urlDetails.length == 4){ // /api/monsters/xxx aka a given monster
-                            if (CombatActivity.monster == null) CombatActivity.monster = new GameCharacter(json);
+                            CombatActivity.monster = new GameCharacter(json);
                             EncounterChoiceActivity.addNewMonster(json);
                             try{
                                 getMonsterImage(json.getString("index"));
@@ -439,11 +439,33 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
                                 array.add(equipment);
                             }
                         } catch (JSONException e) { // the choice item is not a given item but within a list of possible items
-                            JSONObject optionObj = choice.getJSONObject("equipment_option");
-                            JSONObject eqCategory = optionObj.getJSONObject("from").getJSONObject("equipment_category");
-                            String categoryName = eqCategory.getString("index");
-                            if (categoryName.contains("weapon")) {
-                                fillAdapterFromEquipmentCategory(eqCategory, array);
+                            try {
+                                JSONObject optionObj = choice.getJSONObject("equipment_option");
+                                JSONObject eqCategory = optionObj.getJSONObject("from").getJSONObject("equipment_category");
+                                String categoryName = eqCategory.getString("index");
+                                if (categoryName.contains("weapon")) {
+                                    fillAdapterFromEquipmentCategory(eqCategory, array);
+                                }
+                            }
+                            catch (JSONException e1) { // the choice is not a list of possible items neither, but a numbered option
+                                try {
+                                    for (int k = 0; k < 4; k++){
+                                        JSONObject numberedOption = choice.getJSONObject(String.valueOf(k));
+                                        try {
+                                            JSONObject equipment = numberedOption.getJSONObject("equipment");
+                                            if (checkEquipmentIsWeapon(equipment) && !array.contains(equipment)) {
+                                                array.add(equipment);
+                                            }
+                                        } catch (JSONException e2) { // the choice item is not a given item but within a list of possible items
+                                            JSONObject optionObj = numberedOption.getJSONObject("equipment_option");
+                                            JSONObject eqCategory = optionObj.getJSONObject("from").getJSONObject("equipment_category");
+                                            String categoryName = eqCategory.getString("index");
+                                            if (categoryName.contains("weapon")) {
+                                                fillAdapterFromEquipmentCategory(eqCategory, array);
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e2) { }
                             }
                         }
                     }

@@ -149,21 +149,23 @@ public class EncounterChoiceActivity extends AppCompatActivity {
         TextView monsterDesc = (TextView)findViewById(R.id.textMonsterDesc);
         monsterDesc.setText(monster.getDescription());
 
-        SpellAdapter adapter = new SpellAdapter(getApplicationContext(), monster.getSpells());
-        ListView list = (ListView)findViewById(R.id.listMonsterSpells);
-        list.setClickable(true);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Spell spell = (Spell)list.getItemAtPosition(position);
+        if (monster.getSpells() != null) {
+            SpellAdapter adapter = new SpellAdapter(getApplicationContext(), monster.getSpells());
+            ListView list = (ListView) findViewById(R.id.listMonsterSpells);
+            list.setClickable(true);
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Spell spell = (Spell) list.getItemAtPosition(position);
 
-                TextView spellName = (TextView)findViewById(R.id.textSpellName);
-                spellName.setText(spell.name + " (" + spell.suit + ")");
+                    TextView spellName = (TextView) findViewById(R.id.textSpellName);
+                    spellName.setText(spell.name + " (" + spell.suit + ")");
 
-                TextView spellDesc = (TextView)findViewById(R.id.textSpellDesc);
-                spellDesc.setText(spell.desc);
-            }
-        });
-        list.setAdapter(adapter);
+                    TextView spellDesc = (TextView) findViewById(R.id.textSpellDesc);
+                    spellDesc.setText(spell.desc);
+                }
+            });
+            list.setAdapter(adapter);
+        }
     }
 }

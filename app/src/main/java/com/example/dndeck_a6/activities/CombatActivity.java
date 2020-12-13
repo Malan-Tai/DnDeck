@@ -54,6 +54,8 @@ public class CombatActivity extends AppCompatActivity {
             finish();
         }
 
+        doingTurn = false;
+
         MainActivity.currentSave.savedActivity = Utils.SaveActivity.COMBAT_ACTIVITY;
         MainActivity.currentSave.monster = monster;
         MainActivity.currentSave.playerCurrentHP = MainActivity.player.getHp();
@@ -143,13 +145,13 @@ public class CombatActivity extends AppCompatActivity {
             endTurn.setBackgroundColor(getColor(R.color.design_default_color_primary));
 
             while (monsterCount < 6){
-                draw(MainActivity.monsterDeckID, monsterAdapter);
+                draw(monster.chooseDeckToDrawFrom(), monsterAdapter);
                 monsterCount++;
             }
             canDoTurn = true;
         }
         else if (monsterCount < 6){
-            draw(MainActivity.monsterDeckID, monsterAdapter);
+            draw(monster.chooseDeckToDrawFrom(), monsterAdapter);
             monsterCount++;
         }
     }

@@ -53,6 +53,8 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
     }
 
     protected Void doInBackground(Void... voids) {
+        CombatActivity.monster.chooseActions(monsterAdapter);
+
         boolean actionsLeft = true;
 
         while (actionsLeft && CombatActivity.monster != null){
@@ -61,13 +63,23 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
                 discarded.add(playerCard);
                 Spell spell = MainActivity.player.getSpell(playerCard.suit);
                 publishProgress(new SpellCast(MainActivity.player, spell, playerCard, playerAdapter));
+                /*try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
             }
 
             Card monsterCard = CombatActivity.monster.popNextCard();
             if (monsterCard != null) {
                 discarded.add(monsterCard);
-                Spell spell = CombatActivity.monster.getSpell(playerCard.suit);
+                Spell spell = CombatActivity.monster.getSpell(monsterCard.suit);
                 publishProgress(new SpellCast(CombatActivity.monster, spell, playerCard, monsterAdapter));
+                /*try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
             }
 
             actionsLeft = monsterCard != null || playerCard != null;
@@ -78,11 +90,12 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
 
     protected void onProgressUpdate(SpellCast... spellCasts) {
         SpellCast spellCast = spellCasts[0];
-        Log.i("Malan", spellCast.caster + " casts " + spellCast.spell.name + " with " + spellCast.card.code);
+        Log.i("Malan", spellCast.caster.getName() + " casts " + spellCast.spell.name + " with " + spellCast.card.code);
         spellCast.cast(context);
 
         if (CombatActivity.monster == null) return;
         if (CombatActivity.monster.getHp() <= 0){
+            Log.i("Malan", "monster killed");
             MainActivity.player.gainXP(CombatActivity.monster.getXP());
             EncounterChoiceActivity.clearMonsters();
             CombatActivity.monster = null;
@@ -91,8 +104,10 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
             activityReference.get().finish();
         }
         else if (MainActivity.player.getHp() <= 0){
+            Log.i("Malan", "player killed");
             EncounterChoiceActivity.clearMonsters();
             CombatActivity.monster = null;
+            MainActivity.deleteSave(MainActivity.currentSave);
             Intent intent = new Intent(context, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             activityReference.get().startActivity(intent);

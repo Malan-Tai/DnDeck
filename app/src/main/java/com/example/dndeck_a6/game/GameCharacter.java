@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class GameCharacter {
@@ -37,7 +39,7 @@ public class GameCharacter {
     private double difficulty = -1;
     private String avgHP = "";
 
-    private String deckCodes = "AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH";
+    private String deckCodes = ""; //""AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH";
 
     protected ArrayList<Card> cardsToPlay;
 
@@ -75,6 +77,7 @@ public class GameCharacter {
 
             url = json.getString("url");
 
+            difficulty = Double.parseDouble(json.getString("challenge_rating"));
             xp = json.getInt("xp");
 
             try {
@@ -92,16 +95,25 @@ public class GameCharacter {
                         }
                     }
                 }
-                List<Spell> tempList = tempSpells;
-                if (tempSpells.size() > 4) {
-                    tempList = tempSpells.subList(0, 4);
-                }
-                spells = new Spell[tempList.size()];
-                for (int i = 0; i < spells.length; i++) {
-                    spells[i] = tempList.get(i);
+                int len = Math.min(4, tempSpells.size());
+
+                spells = new Spell[4];
+                for (int i = 0; i < len; i++) {
+                    spells[i] = tempSpells.get(i);
                     Log.i("Malan", "added spell " + spells[i].name);
                 }
+                for (int i = len; i < 4; i++){
+                    spells[i] = new DoNothingSpell();
+                    Log.i("Malan", "added pass spell");
+                }
                 setSpellsSuits();
+
+                try {
+                    deckCodes = json.getString("deck_codes");
+                }
+                catch (JSONException e) {
+                    generateDeck();
+                }
             }
             catch (JSONException e) { }
 
@@ -109,7 +121,6 @@ public class GameCharacter {
 
             size = json.getString("size");
             type = json.getString("type");
-            difficulty = Double.parseDouble(json.getString("challenge_rating"));
             avgHP = json.getString("hit_points");
             desc += size + " " + type + " of difficulty " + difficulty + "\n";
             desc += "Average HP : " + avgHP + " | Armor class : " + armorClass + "\n";
@@ -121,9 +132,102 @@ public class GameCharacter {
         }
     }
 
-    public Spell[] getSpells() { return spells; }
+    private void generateDeck() {
+        /*Arrays.sort(spells, 0, 4, new Comparator<Spell>() {
+            @Override
+            public int compare(Spell o1, Spell o2) {
+                return o1.getAverageDamage() - o2.getAverageDamage();
+            }
+        });*/
+        deckCodes = "";
 
-    public ArrayList<String> getSpellsSuits() {
+        for (int i = 0; i < 4; i++){
+            String suit = spells[i].suit;
+            if (spells[i].name.equals("")){ // pass spell
+                deckCodes += "3" + suit + ",2" + suit + ",A" + suit + ",";
+                continue;
+            }
+
+            int budget = 6 + (int)difficulty;
+            ArrayList<Integer> addedList = new ArrayList<Integer>();
+            int minLeft = 1;
+
+            while (budget >= minLeft){
+                int added = addedList.size();
+                int minValue = Utils.sum(3 - added);
+                int freedom = budget - minValue;
+                if (freedom <= 3 - added){
+                    for (int j = 3 - added; j > 0; j--){
+                        int bonus = 0;
+                        if (freedom > 0) bonus = Utils.rollDie(freedom);
+                        while (addedList.contains(j + bonus) && bonus > 0){
+                            bonus--;
+                        }
+                        freedom -= bonus;
+                        addedList.add(j + bonus);
+                    }
+                    break;
+                }
+
+                if (budget == minLeft){
+                    addedList.add(minLeft);
+                    break;
+                }
+
+                minValue = Utils.sum(2 - added);
+                int maxRandom = Math.min(13, budget - minValue);
+                int random = Utils.rollDie(maxRandom);
+                while (addedList.contains(random)){
+                    random = Utils.rollDie(maxRandom);
+                    Log.i("Malan", "in while");
+                }
+                budget -= random;
+                addedList.add(random);
+                while (addedList.contains(minLeft)){
+                    minLeft++;
+                }
+            }
+
+            for (int j = 0; j < addedList.size(); j++){
+                String cardValue = "";
+                int value = addedList.get(j);
+                switch (value){
+                    case 13:
+                        cardValue = "K";
+                        break;
+                    case 12:
+                        cardValue = "Q";
+                        break;
+                    case 11:
+                        cardValue = "J";
+                        break;
+                    case 1:
+                        cardValue = "A";
+                        break;
+                    default:
+                        cardValue += value;
+                        break;
+                }
+                deckCodes += cardValue + suit + ",";
+            }
+
+            //Log.i("Malan", spells[i].name + " (" + suit + ") : " + spells[i].getAverageDamage());
+        }
+        Log.i("Malan", "generated deck : " + deckCodes);
+    }
+
+    public ArrayList<Spell> getSpells() {
+        if (spells == null) return null;
+
+        ArrayList<Spell> res = new ArrayList<>();
+        for (int i = 0; i < spells.length; i++){
+            Spell spell = spells[i];
+            if (!spell.name.equals("")) res.add(spell);
+        }
+        return res;
+    }
+
+    /*public ArrayList<String> getSpellsSuits() {
         ArrayList<String> res = new ArrayList<>();
         if (spells == null) return res;
 
@@ -131,7 +235,7 @@ public class GameCharacter {
             res.add(spells[i].suit);
         }
         return res;
-    }
+    }*/
 
     public Spell getSpell(String suit){
         for (int i = 0; i < spells.length; i++){
@@ -144,25 +248,16 @@ public class GameCharacter {
 
     public void setSpellsSuits(){
         if (spells != null){
+            ArrayList<String> suits = new ArrayList<>(Arrays.asList("C", "S", "H", "D"));
             for (int i = 0; i < spells.length; i++){
-                String suit = "";
-                switch (i){
-                    case 0:
-                        suit = "C";
-                        break;
-                    case 1:
-                        suit = "S";
-                        break;
-                    case 2:
-                        suit = "H";
-                        break;
-                    case 3:
-                        suit = "D";
-                        break;
-                    default:
-                        break;
+                if (spells[i].suit.equals("")) {
+                    String suit = suits.get(Utils.rollDie(suits.size()) - 1);
+                    suits.remove(suit);
+                    spells[i].suit = suit;
                 }
-                spells[i].suit = suit;
+                else {
+                    suits.remove(spells[i].suit);
+                }
             }
         }
     }
@@ -273,9 +368,12 @@ public class GameCharacter {
 
             JSONArray actions = new JSONArray();
             for (int i = 0; i < spells.length; i++) {
-                actions.put(spells[i].toJSON());
+                JSONObject spellJson = spells[i].toJSON();
+                if (spellJson != null) actions.put(spellJson);
             }
             json.put("actions", actions);
+
+            json.put("deck_codes", deckCodes);
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -295,14 +393,15 @@ public class GameCharacter {
     }
 
     public void chooseActions(CardImageAdapter adapter) {
-        ArrayList<String> usedSuits = getSpellsSuits();
+        //ArrayList<String> usedSuits = getSpellsSuits();
         while (cardsToPlay.size() < 3){
             int max = -1;
             Card maxCard = null;
             for (int i = 0; i < adapter.getCount(); i++){
                 Card card = adapter.getItem(i);
-                if (card.value > max && !card.selectedInHand && usedSuits.contains(card.suit)){
-                    max = card.value;
+                int dmg = getSpell(card.suit).getAverageDamage();
+                if (card.value * dmg > max && !card.selectedInHand){ // && usedSuits.contains(card.suit)){
+                    max = card.value * dmg;
                     maxCard = card;
                 }
             }

@@ -59,6 +59,7 @@ public class CombatActivity extends AppCompatActivity {
         MainActivity.currentSave.savedActivity = Utils.SaveActivity.COMBAT_ACTIVITY;
         MainActivity.currentSave.monster = monster;
         MainActivity.currentSave.playerCurrentHP = MainActivity.player.getHp();
+        MainActivity.saveGame();
 
         DeckParserTask deckTask1 = new DeckParserTask(this, getApplicationContext());
         deckTask1.execute(MainActivity.playerDeckID + "/shuffle/?cards=" + MainActivity.player.getDeckCodes());
@@ -118,7 +119,7 @@ public class CombatActivity extends AppCompatActivity {
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
-                MainActivity.saveGame();
+                //MainActivity.saveGame();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class SpellAdapter extends ArrayAdapter<Spell> {
 
-    public SpellAdapter(Context context, Spell[] spells) {
+    public SpellAdapter(Context context, ArrayList<Spell> spells) {
         super(context, 0, spells);
     }
 

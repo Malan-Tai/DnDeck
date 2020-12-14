@@ -1,5 +1,6 @@
 package com.example.dndeck_a6.game;
 
+import com.example.dndeck_a6.Utils;
 import com.example.dndeck_a6.activities.MainActivity;
 
 import org.json.JSONArray;
@@ -13,6 +14,7 @@ public class Player extends GameCharacter {
     private PlayerRace playerRace;
 
     private ArrayList<Card> deck;
+    private ArrayList<Card> nextCardsToAdd;
 
     private int level = 1;
     private int[] levelThresholds = new int[] {
@@ -45,10 +47,12 @@ public class Player extends GameCharacter {
             }
 
             for (int j = 0; j < 3; j++){
-                if (j == 0) deck.add(new Card("A" + suit));
-                else deck.add(new Card((j + 1) + suit));
+                if (j == 0) deck.add(new Card("A" + suit, MainActivity.playerDeckID));
+                else deck.add(new Card((j + 1) + suit, MainActivity.playerDeckID));
             }
         }
+
+        generateNextCards();
     }
 
     public Player(JSONObject json){
@@ -73,6 +77,7 @@ public class Player extends GameCharacter {
             e.printStackTrace();
         }
 
+        generateNextCards();
     }
 
     public void setSpells(Spell[] sp){
@@ -110,10 +115,114 @@ public class Player extends GameCharacter {
         ArrayList<Card> res = new ArrayList<>();
         for (int i = 0; i < deck.size(); i++){
             Card c = deck.get(i);
-            if (c.code.contains(suit)) res.add(c);
+            if (c.suit.equals(suit)) res.add(c);
         }
 
         return res;
+    }
+
+    private void generateNextCards() {
+        int maxC = -1;
+        int maxS = -1;
+        int maxH = -1;
+        int maxD = -1;
+
+        for (int i = 0; i < deck.size(); i++){
+            Card c = deck.get(i);
+            switch (c.suit){
+                case "C":
+                    if (c.value > maxC) maxC = c.value;
+                    break;
+                case "S":
+                    if (c.value > maxS) maxS = c.value;
+                    break;
+                case "H":
+                    if (c.value > maxH) maxH = c.value;
+                    break;
+                case "D":
+                    if (c.value > maxD) maxD = c.value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        nextCardsToAdd = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            int value = 0;
+            String cardValue = "";
+            String suit = "";
+            switch (i){
+                case 0:
+                    suit = "C";
+                    value = maxC;
+                    break;
+                case 1:
+                    suit = "S";
+                    value = maxS;
+                    break;
+                case 2:
+                    suit = "H";
+                    value = maxH;
+                    break;
+                case 3:
+                    suit = "D";
+                    value = maxD;
+                    break;
+                default:
+                    break;
+            }
+            value++;
+
+            switch (value){
+                case 13:
+                    cardValue = "K";
+                    break;
+                case 12:
+                    cardValue = "Q";
+                    break;
+                case 11:
+                    cardValue = "J";
+                    break;
+                case 1:
+                    cardValue = "A";
+                    break;
+                default:
+                    cardValue += value;
+                    break;
+            }
+
+            if (value <= 13) nextCardsToAdd.add(new Card(cardValue + suit, MainActivity.playerDeckID));
+        }
+    }
+
+    public ArrayList<Card> getNextCardsToAdd() { return nextCardsToAdd; }
+
+    public void addCard(Card card){
+        deck.add(card);
+        nextCardsToAdd.remove(card);
+        if (card.value == 13) return;
+
+        int value = card.value + 1;
+        String cardValue = "";
+        switch (value){
+            case 13:
+                cardValue = "K";
+                break;
+            case 12:
+                cardValue = "Q";
+                break;
+            case 11:
+                cardValue = "J";
+                break;
+            case 1:
+                cardValue = "A";
+                break;
+            default:
+                cardValue += value;
+                break;
+        }
+        nextCardsToAdd.add(new Card(cardValue + card.suit, MainActivity.playerDeckID));
     }
 
     public ArrayList<Card> getDeck() { return deck; }
@@ -134,22 +243,42 @@ public class Player extends GameCharacter {
         return res;
     }
 
+    public int getDeckLength(){
+        int res = 0;
+
+        for (int i = 0; i < deck.size(); i++){
+            Card card = deck.get(i);
+            if (card.selectedInDeck){
+                res++;
+            }
+        }
+
+        return res;
+    }
+
     public String getRaceClass() { return "Level " + level + " " + playerRace.name + " " + playerClass.name; }
 
     public int getSpellCastingAbility(){
         return getAttribute(playerClass.spellCastingAbility);
     }
 
-    public void gainXP(int gain) {
+    public boolean gainXP(int gain) {
         xp += gain;
         if (level < 20 && xp >= levelThresholds[level]){
-            levelUp();
+            //levelUp();
+            return true;
         }
+        return false;
     }
 
-    public void levelUp() {
+    public int levelUp() {
         level++;
 
+        int bonusHP = Math.max(1, Utils.rollDie(playerClass.hitDie) + modifiers[attributes[2]]);
+        maxHP += bonusHP;
+        hp = maxHP;
+
+        return bonusHP;
     }
 
     @Override

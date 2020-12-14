@@ -34,8 +34,10 @@ public class EncounterChoiceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encounter_choice);
+        Log.i("Malan", "creating encounter choice activity");
 
         for (int i = createMonstersIndex; i < monsters.length; i++){
+            Log.i("Malan", "creating a monster");
             JSONObject json = MainActivity.getRandomMonster();
             try {
                 DndParserTask task = new DndParserTask(this, getApplicationContext());
@@ -47,11 +49,16 @@ public class EncounterChoiceActivity extends AppCompatActivity {
 
         while (createMonstersIndex < monsters.length){
             Log.i("Malan", "in while");
+            continue;
         }
+        Log.i("Malan", "finished creation");
 
         MainActivity.currentSave.savedActivity = Utils.SaveActivity.ENCOUNTER_ACTIVITY;
         MainActivity.currentSave.monsters = monsters;
         MainActivity.currentSave.playerCurrentHP = MainActivity.player.getHp();
+        Log.i("Malan", "saving");
+        MainActivity.saveGame();
+        Log.i("Malan", "finished saving");
 
         Button monsterBtn1 = (Button)findViewById(R.id.buttonMonster1);
         monsterBtn1.setText(monsters[0].getName());
@@ -106,7 +113,7 @@ public class EncounterChoiceActivity extends AppCompatActivity {
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
-                MainActivity.saveGame();
+                //MainActivity.saveGame();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

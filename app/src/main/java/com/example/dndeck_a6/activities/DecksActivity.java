@@ -12,6 +12,8 @@ import com.example.dndeck_a6.CardImageAdapter;
 import com.example.dndeck_a6.R;
 import com.example.dndeck_a6.game.Spell;
 
+import java.util.ArrayList;
+
 public class DecksActivity extends AppCompatActivity {
 
     @Override
@@ -19,41 +21,41 @@ public class DecksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_decks);
 
-        Spell[] spells = MainActivity.player.getSpells();
+        ArrayList<Spell> spells = MainActivity.player.getSpells();
 
         Button btnSpell1 = (Button)findViewById(R.id.buttonSpell1);
-        btnSpell1.setText(spells[0].name);
+        btnSpell1.setText(spells.get(0).name);
         btnSpell1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickSpell(spells[0]);
+                clickSpell(spells.get(0));
             }
         });
 
         Button btnSpell2 = (Button)findViewById(R.id.buttonSpell2);
-        btnSpell2.setText(spells[1].name);
+        btnSpell2.setText(spells.get(1).name);
         btnSpell2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickSpell(spells[1]);
+                clickSpell(spells.get(1));
             }
         });
 
         Button btnSpell3 = (Button)findViewById(R.id.buttonSpell3);
-        btnSpell3.setText(spells[2].name);
+        btnSpell3.setText(spells.get(2).name);
         btnSpell3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickSpell(spells[2]);
+                clickSpell(spells.get(2));
             }
         });
 
         Button btnSpell4 = (Button)findViewById(R.id.buttonSpell4);
-        btnSpell4.setText(spells[3].name);
+        btnSpell4.setText(spells.get(3).name);
         btnSpell4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickSpell(spells[3]);
+                clickSpell(spells.get(3));
             }
         });
 

@@ -65,5 +65,11 @@
     <!-- load game activity -->
     <string name="games">Saved Games</string>
 
+    <!-- level up activity -->
+    <string name="levelUp">Level Up !</string>
+    <string name="cardChoice">Choose a card to obtain :</string>
+    <string name="attributeIncrease">Increase one or two abilities (to a max of 20)</string>
+    <string name="confirm">Confirm</string>
+
 
 </resources>

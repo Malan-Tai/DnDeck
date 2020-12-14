@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Utils.testGenerator();
         currentSave = new Save();
 
         DndParserTask monstersTask = new DndParserTask(this, getApplicationContext());
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void saveGame() {
+        Log.i("Malan", "saving game...");
         String saveJson = currentSave.toJSON().toString();
         Log.i("Malan", "saving game : " + saveJson);
         database.insertData(currentSave.id, saveJson);

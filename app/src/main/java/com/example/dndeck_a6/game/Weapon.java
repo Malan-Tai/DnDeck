@@ -19,6 +19,10 @@ public class Weapon extends Spell {
         try {
             name = json.getString("name");
 
+            try {
+                suit = json.getString("suit");
+            } catch (JSONException e){ }
+
             desc = "";
             if (json.getString("weapon_range").equals("Melee")){
                 desc += "Melee weapon (uses STR to hit)\n";
@@ -83,6 +87,7 @@ public class Weapon extends Spell {
 
         try {
             json.put("name", name);
+            json.put("suit", suit);
 
             if (abilityToHit.equals("STR")){
                 json.put("weapon_range", "Melee");

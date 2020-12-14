@@ -95,7 +95,7 @@ public class NewGameActivity extends AppCompatActivity {
                     EditText name = (EditText)findViewById(R.id.editCharacterName);
 
                     int hp = 0;
-                    if (playerClass != null) hp += playerClass.hitDie;
+                    if (playerClass != null) hp += 2 * playerClass.hitDie;
                     if (playerRace != null) hp += playerRace.bonusCon;
 
                     if (rolledAttributes) {
@@ -275,7 +275,7 @@ public class NewGameActivity extends AppCompatActivity {
     public void updateHP(){
         String hpText = getString(R.string.playerHP);
         int hp = 0;
-        if (playerClass != null) hp += playerClass.hitDie;
+        if (playerClass != null) hp += 2 * playerClass.hitDie;
         if (playerRace != null) hp += playerRace.bonusCon;
 
         if (rolledAttributes) {

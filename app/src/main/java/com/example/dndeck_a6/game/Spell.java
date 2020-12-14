@@ -19,7 +19,8 @@ public class Spell {
 
     protected int attackBonus = 0;
 
-    protected String[] damageRolls;
+    protected String[] damageRolls = null;
+    private int averageDamage = 0;
 
     protected String difficultyClassAbility = "";
     protected int difficultyClass = 15;
@@ -27,7 +28,7 @@ public class Spell {
 
     protected String[] damageTypes = null;
 
-    protected boolean player;
+    protected boolean player = false;
 
     public Spell(JSONObject json){
         this(json, true);
@@ -38,6 +39,10 @@ public class Spell {
         if (player) {
             try {
                 name = json.getString("name");
+
+                try {
+                    suit = json.getString("suit");
+                } catch (JSONException e){ }
 
                 desc = "";
                 damageRolls = new String[1];
@@ -84,6 +89,10 @@ public class Spell {
             try {
                 name = json.getString("name");
 
+                try {
+                    suit = json.getString("suit");
+                } catch (JSONException e){ }
+
                 desc = "";
                 try {
                     attackBonus = json.getInt("attack_bonus");
@@ -98,13 +107,21 @@ public class Spell {
                 damageRolls = new String[dmgFields.length()];
                 damageTypes = new String[dmgFields.length()];
                 for (int i = 0; i < dmgFields.length(); i++){
-                    damageRolls[i] = dmgFields.getJSONObject(i).getString("damage_dice");
+                    JSONObject dmg;
+                    try {
+                        dmg = dmgFields.getJSONObject(i).getJSONArray("from").getJSONObject(0);
+                    }
+                    catch (JSONException e){
+                        dmg = dmgFields.getJSONObject(i);
+                    }
+                    damageRolls[i] = dmg.getString("damage_dice");
                     desc += damageRolls[i] + " ";
                     try {
                         String dmgType = dmgFields.getJSONObject(i).getJSONObject("damage_type").getString("name");
                         damageTypes[i] = dmgType;
                         desc += dmgType + " ";
                     } catch (JSONException e) { damageTypes[i] = ""; }
+                    averageDamage += Utils.averageDice(damageRolls[i]);
                 }
 
                 try {
@@ -212,6 +229,7 @@ public class Spell {
         else {*/
         try {
             json.put("name", name);
+            json.put("suit", suit);
 
             if (attackBonus != 0) json.put("attack_bonus", attackBonus);
 
@@ -220,7 +238,7 @@ public class Spell {
                 JSONObject dmgField = new JSONObject();
                 dmgField.put("damage_dice", damageRolls[i]);
 
-                if (damageTypes != null && !damageTypes[i].equals("")){
+                if (damageTypes != null && damageTypes[i] != null && !damageTypes[i].equals("")){
                     JSONObject dmgType = new JSONObject();
                     dmgType.put("name", damageTypes[i]);
                     dmgField.put("damage_type", dmgType);
@@ -246,4 +264,6 @@ public class Spell {
 
         return json;
     }
+
+    public int getAverageDamage() { return averageDamage; }
 }

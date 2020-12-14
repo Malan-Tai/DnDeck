@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dndeck_a6.activities.CombatActivity;
 import com.example.dndeck_a6.activities.EncounterChoiceActivity;
+import com.example.dndeck_a6.activities.LevelUpActivity;
 import com.example.dndeck_a6.activities.MainActivity;
 import com.example.dndeck_a6.game.Card;
 import com.example.dndeck_a6.game.GameCharacter;
@@ -74,7 +75,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
             if (monsterCard != null) {
                 discarded.add(monsterCard);
                 Spell spell = CombatActivity.monster.getSpell(monsterCard.suit);
-                publishProgress(new SpellCast(CombatActivity.monster, spell, playerCard, monsterAdapter));
+                publishProgress(new SpellCast(CombatActivity.monster, spell, monsterCard, monsterAdapter));
                 /*try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -92,14 +93,29 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
         SpellCast spellCast = spellCasts[0];
         Log.i("Malan", spellCast.caster.getName() + " casts " + spellCast.spell.name + " with " + spellCast.card.code);
         spellCast.cast(context);
+        if (spellCast.caster == MainActivity.player){
+            GridView grid = (GridView)activityReference.get().findViewById(R.id.gridPlayerHand);
+            grid.setAdapter(playerAdapter);
+        }
+        else {
+            GridView grid = (GridView)activityReference.get().findViewById(R.id.gridEnemyHand);
+            grid.setAdapter(monsterAdapter);
+        }
 
         if (CombatActivity.monster == null) return;
         if (CombatActivity.monster.getHp() <= 0){
             Log.i("Malan", "monster killed");
-            MainActivity.player.gainXP(CombatActivity.monster.getXP());
+            boolean lvlUp = MainActivity.player.gainXP(CombatActivity.monster.getXP());
             EncounterChoiceActivity.clearMonsters();
             CombatActivity.monster = null;
-            Intent intent = new Intent(context, EncounterChoiceActivity.class);
+
+            Intent intent;
+            if (!lvlUp) {
+                intent = new Intent(context, EncounterChoiceActivity.class);
+            }
+            else {
+                intent = new Intent(context, LevelUpActivity.class);
+            }
             activityReference.get().startActivity(intent);
             activityReference.get().finish();
         }
@@ -127,7 +143,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
         }
 
         TextView monsterDraw = (TextView)activityReference.get().findViewById(R.id.textEnemyDeckCount);
-        String monsterRemaining = playerDraw.getText().toString();
+        String monsterRemaining = monsterDraw.getText().toString();
         if (monsterRemaining.equals("0")){
             DeckParserTask listDiscardTask = new DeckParserTask(activityReference.get(), context);
             listDiscardTask.execute(MainActivity.monsterDeckID + "/pile/discard/list/");

@@ -89,7 +89,7 @@ public class EquipmentChoiceActivity extends AppCompatActivity {
                 Weapon[] weapons = getWeapons(array);
                 int needed = 4;
                 if (MainActivity.player.getSpells() != null){
-                    needed -= MainActivity.player.getSpells().length;
+                    needed -= MainActivity.player.getSpells().size();
                 }
                 boolean countIsOk = weapons.length == needed;
                 if (!countIsOk) Toast.makeText(getApplicationContext(), "Please select exactly " + needed + " weapons !", Toast.LENGTH_SHORT).show();

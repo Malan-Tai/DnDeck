@@ -13,10 +13,13 @@ public class PlayerClass {
 
     public JSONObject json;
 
+    //public String levelsURL;
+
     public PlayerClass(JSONObject json){
         try{
             name = json.getString("name");
             hitDie = json.getInt("hit_die");
+            //levelsURL = json.getString("class_levels");
 
             try {
                 spellCastingAbility = json.getJSONObject("spellcasting").getJSONObject("spellcasting_ability").getString("name");
@@ -37,6 +40,7 @@ public class PlayerClass {
         try{
             json.put("name", name);
             json.put("hit_die", hitDie);
+            //json.put("class_levels", levelsURL);
 
             if (!spellCastingAbility.equals("")){
                 JSONObject spellcasting = new JSONObject();

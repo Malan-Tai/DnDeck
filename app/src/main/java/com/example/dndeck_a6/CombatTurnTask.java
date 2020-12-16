@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -54,7 +55,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
     }
 
     protected Void doInBackground(Void... voids) {
-        CombatActivity.monster.chooseActions(monsterAdapter);
+        //CombatActivity.monster.chooseActions(monsterAdapter);
 
         boolean actionsLeft = true;
 
@@ -105,6 +106,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
         if (CombatActivity.monster == null) return;
         if (CombatActivity.monster.getHp() <= 0){
             Log.i("Malan", "monster killed");
+            Toast.makeText(context, CombatActivity.monster.getName() + " was killed, you gained " + CombatActivity.monster.getXP() + " xp !", Toast.LENGTH_SHORT).show();
             boolean lvlUp = MainActivity.player.gainXP(CombatActivity.monster.getXP());
             EncounterChoiceActivity.clearMonsters();
             CombatActivity.monster = null;
@@ -133,6 +135,8 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
 
     protected void onPostExecute(Void v) {
         if (CombatActivity.monster == null) return;
+
+        //((CombatActivity)activityReference.get()).clearPlayedCards();
 
         TextView playerDraw = (TextView)activityReference.get().findViewById(R.id.textPlayerDeckCount);
         String playerRemaining = playerDraw.getText().toString();

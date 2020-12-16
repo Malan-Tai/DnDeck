@@ -26,6 +26,9 @@ public class CharacterActivity extends AppCompatActivity {
         TextView hp = (TextView)findViewById(R.id.textHP);
         hp.setText(getString(R.string.playerHP) + " " + MainActivity.player.getHpText());
 
+        TextView xp = (TextView)findViewById(R.id.textXP);
+        xp.setText(getString(R.string.playerXP) + " " + MainActivity.player.getXpText());
+
         int[] attributes = MainActivity.player.getAttributes();
         for (int i = 0; i < 6; i++){
             TextView attrText;

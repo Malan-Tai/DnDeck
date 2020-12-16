@@ -109,4 +109,22 @@
         app:layout_constraintStart_toStartOf="@+id/imagePlayerDeck"
         app:layout_constraintTop_toTopOf="@+id/imagePlayerDeck" />
 
+    <GridView
+        android:id="@+id/gridEnemyChosen"
+        android:layout_width="210dp"
+        android:layout_height="100dp"
+        android:numColumns="3"
+        app:layout_constraintEnd_toStartOf="@+id/imageEnemyDeck"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textEnemyHP" />
+
+    <GridView
+        android:id="@+id/gridPlayerChosen"
+        android:layout_width="210dp"
+        android:layout_height="100dp"
+        android:numColumns="3"
+        app:layout_constraintBottom_toTopOf="@+id/textPlayerHP"
+        app:layout_constraintEnd_toStartOf="@+id/imagePlayerDeck"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,6 +29,12 @@
             android:text="" />
 
         <TextView
+            android:id="@+id/textXP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+        <TextView
             android:id="@+id/textHP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

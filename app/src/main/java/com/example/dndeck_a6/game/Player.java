@@ -229,6 +229,13 @@ public class Player extends GameCharacter {
 
     public int getLevel() { return level; }
 
+    public String getXpText() {
+        if (level < 20){
+            return xp + " / " + levelThresholds[level];
+        }
+        return levelThresholds[19] + " / " + levelThresholds[19];
+    }
+
     @Override
     public String getDeckCodes(){
         String res = "";

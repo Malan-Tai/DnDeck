@@ -24,22 +24,28 @@ public class CardImageAdapter extends ArrayAdapter<Card> {
     private boolean combat;
     private boolean isPlayer;
     private boolean levelUp;
+    private boolean clickable;
 
     public Card levelUpSelectedCard = null;
 
     public CardImageAdapter(Context context, ArrayList<Card> cards) {
-        this(context, cards, false, true, false);
+        this(context, cards, false, true, false, true);
     }
 
     public CardImageAdapter(Context context, ArrayList<Card> cards, boolean inCombat, boolean player) {
-        this(context, cards, inCombat, player, false);
+        this(context, cards, inCombat, player, false, true);
     }
 
     public CardImageAdapter(Context context, ArrayList<Card> cards, boolean inCombat, boolean player, boolean level) {
+        this(context, cards, inCombat, player, level, true);
+    }
+
+    public CardImageAdapter(Context context, ArrayList<Card> cards, boolean inCombat, boolean player, boolean level, boolean click) {
         super(context, 0, cards);
         combat = inCombat;
         isPlayer = player;
         levelUp = level;
+        clickable = click;
     }
 
     public int getCount()

@@ -328,6 +328,8 @@ public class GameCharacter {
         return card;
     }
 
+    public ArrayList<Card> getCardsToPlay() { return new ArrayList<>(cardsToPlay); }
+
     public boolean abilityCheck(String dcType, int difficulty){
         int res = Utils.rollDie(20) + modifiers[getAttribute(dcType)];
         return res >= difficulty;

@@ -15,6 +15,7 @@
     <string name="playerWis">Wisdom :</string>
     <string name="playerCha">Charisma :</string>
     <string name="playerHP">Hit points :</string>
+    <string name="playerXP">Experience points :</string>
     <string name="start">Start Game</string>
     <string name="next">Next</string>
 

@@ -110,6 +110,8 @@ public class CombatActivity extends AppCompatActivity {
                 if (canDoTurn){
                     canDoTurn = false;
                     endTurn.setBackgroundColor(getColor(R.color.material_on_background_disabled));
+                    monster.chooseActions(monsterAdapter);
+                    setPlayedCards();
                     CombatTurnTask turnTask = new CombatTurnTask(instance, getApplicationContext(), playerAdapter, monsterAdapter);
                     turnTask.execute();
                 }
@@ -130,6 +132,7 @@ public class CombatActivity extends AppCompatActivity {
     }
 
     private void playerDraw(String id, CardImageAdapter playerAdapter, CardImageAdapter monsterAdapter){
+        clearPlayedCards();
         int playerCount = playerAdapter.getCount();
         int monsterCount = monsterAdapter.getCount();
 
@@ -168,5 +171,25 @@ public class CombatActivity extends AppCompatActivity {
 
         TextView playerHP = (TextView)findViewById(R.id.textPlayerHP);
         playerHP.setText(MainActivity.player.getHpText());
+    }
+
+    private void setPlayedCards() {
+        GridView monsterGrid = (GridView)findViewById(R.id.gridEnemyChosen);
+        CardImageAdapter monsterAdapter = new CardImageAdapter(getApplicationContext(), monster.getCardsToPlay(), true, true, false, false);
+        monsterGrid.setAdapter(monsterAdapter);
+
+        GridView playerGrid = (GridView)findViewById(R.id.gridPlayerChosen);
+        CardImageAdapter playerAdapter = new CardImageAdapter(getApplicationContext(), MainActivity.player.getCardsToPlay(), true, true, false, false);
+        playerGrid.setAdapter(playerAdapter);
+    }
+
+    private void clearPlayedCards() {
+        GridView monsterGrid = (GridView)findViewById(R.id.gridEnemyChosen);
+        CardImageAdapter monsterAdapter = new CardImageAdapter(getApplicationContext(), new ArrayList<>(), true, true, false, false);
+        monsterGrid.setAdapter(monsterAdapter);
+
+        GridView playerGrid = (GridView)findViewById(R.id.gridPlayerChosen);
+        CardImageAdapter playerAdapter = new CardImageAdapter(getApplicationContext(), new ArrayList<>(), true, true, false, false);
+        playerGrid.setAdapter(playerAdapter);
     }
 }

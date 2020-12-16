@@ -146,6 +146,10 @@ public class Spell {
 
     protected Spell() {}
 
+    public void setAttackBonus(int attackBonus) {
+        this.attackBonus = attackBonus;
+    }
+
     public void cast(Context context, int value){
         GameCharacter target;
         if (player){

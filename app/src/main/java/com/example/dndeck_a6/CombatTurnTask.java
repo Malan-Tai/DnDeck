@@ -130,6 +130,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
                 EncounterChoiceActivity.clearMonsters();
                 CombatActivity.monster = null;
                 MainActivity.deleteSave(MainActivity.currentSave);
+                MainActivity.player = null;
                 Intent intent = new Intent(context, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 activityReference.get().startActivity(intent);

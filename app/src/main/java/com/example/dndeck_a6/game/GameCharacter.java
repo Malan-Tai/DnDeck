@@ -80,8 +80,26 @@ public class GameCharacter {
             difficulty = Double.parseDouble(json.getString("challenge_rating"));
             xp = json.getInt("xp");
 
+            ArrayList<Spell> tempSpells = new ArrayList<>();
+
+            /*try {
+                JSONArray abilities = json.getJSONArray("special_abilities");
+                for (int i = 0; i < abilities.length(); i++) {
+                    JSONObject ability = abilities.getJSONObject(i);
+                    if (ability.getString("name").equals("Spellcasting")){
+                        JSONObject spellcasting = ability.getJSONObject("spellcasting");
+                        int modifier = spellcasting.getInt("modifier") + getAttribute(spellcasting.getJSONObject("ability").getString("name"));
+                        JSONArray magicSpells = spellcasting.getJSONArray("spells");
+                        for (int j = 0; j < magicSpells.length(); j++){
+                            JSONObject spell = magicSpells.getJSONObject(j);
+
+                        }
+                        break;
+                    }
+                }
+            } catch (JSONException e) { }*/
+
             try {
-                ArrayList<Spell> tempSpells = new ArrayList<>();
                 JSONArray actions = json.getJSONArray("actions");
                 for (int i = 0; i < actions.length(); i++) {
                     JSONObject action = actions.getJSONObject(i);
@@ -95,27 +113,28 @@ public class GameCharacter {
                         }
                     }
                 }
-                int len = Math.min(4, tempSpells.size());
-
-                spells = new Spell[4];
-                for (int i = 0; i < len; i++) {
-                    spells[i] = tempSpells.get(i);
-                    Log.i("Malan", "added spell " + spells[i].name);
-                }
-                for (int i = len; i < 4; i++){
-                    spells[i] = new DoNothingSpell();
-                    Log.i("Malan", "added pass spell");
-                }
-                setSpellsSuits();
-
-                try {
-                    deckCodes = json.getString("deck_codes");
-                }
-                catch (JSONException e) {
-                    generateDeck();
-                }
             }
             catch (JSONException e) { }
+
+            int len = Math.min(4, tempSpells.size());
+
+            spells = new Spell[4];
+            for (int i = 0; i < len; i++) {
+                spells[i] = tempSpells.get(i);
+                Log.i("Malan", "added spell " + spells[i].name);
+            }
+            for (int i = len; i < 4; i++){
+                spells[i] = new DoNothingSpell();
+                Log.i("Malan", "added pass spell");
+            }
+            setSpellsSuits();
+
+            try {
+                deckCodes = json.getString("deck_codes");
+            }
+            catch (JSONException e) {
+                generateDeck();
+            }
 
             cardsToPlay = new ArrayList<>();
 

@@ -157,29 +157,36 @@ public class Spell {
         if (target == null) return;
 
         boolean hit = false;
+        boolean crit = false;
+        String critString = "";
         if (difficultyClassAbility.equals("")){ // if the spell requires a hit roll and not an evade roll
 
-            int hitRoll = 0;
+            int modifier;
             if (player){
-                hitRoll = Utils.rollDie(20) + GameCharacter.modifiers[MainActivity.player.getSpellCastingAbility()];
+                modifier = GameCharacter.modifiers[MainActivity.player.getSpellCastingAbility()];
             }
             else{
-                hitRoll = Utils.rollDie(20) + attackBonus;
+                modifier = attackBonus;
             }
-            hit = hitRoll >= target.armorClass;
+            int roll = Utils.rollDie(20);
+            int hitRoll = roll + modifier;
+            crit = roll == 20;
+            hit = (hitRoll >= target.armorClass || crit) && !(roll == 1);
+
+            if (crit || roll == 1) critString = " critically";
         }
         else {
             hit = target.abilityCheck(difficultyClassAbility, difficultyClass);
         }
 
         if (!hit) {
-            Toast.makeText(context, name + " missed " + target.name + "!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, name + critString + " missed " + target.name + "!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         int damage = 0;
         for (int i = 0; i < damageRolls.length; i++){
-            damage += Utils.rollDice(damageRolls[i]);
+            damage += Utils.rollDice(damageRolls[i], crit, player);
         }
 
         String bonusRoll = "";
@@ -190,7 +197,7 @@ public class Spell {
         else bonusRoll = "1d" + value;
         damage += Utils.rollDice(bonusRoll);
 
-        Toast.makeText(context, name + " hit " + target.name + " for " + damage + " damage!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, name + critString + " hit " + target.name + " for " + damage + " damage!", Toast.LENGTH_SHORT).show();
         target.takeDamage(damage);
     }
 

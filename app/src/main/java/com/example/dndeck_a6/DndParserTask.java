@@ -522,7 +522,23 @@ public class DndParserTask extends AsyncTask<String, Integer, Void> {
                     String desc = "";
 
                     if (json.getString("weapon_range").equals("Melee")){
-                        desc += "Melee weapon (uses STR to hit)\n";
+                        boolean fine = false;
+                        try {
+                            JSONArray properties = json.getJSONArray("properties");
+                            for (int i = 0; i < properties.length(); i++){
+                                if (properties.getJSONObject(i).getString("index").equals("finesse")){
+                                    fine = true;
+                                    break;
+                                }
+                            }
+                        }
+                        catch (JSONException e) { }
+
+                        if (!fine) {
+                            desc += "Melee weapon (uses STR to hit and damage)\n";
+                        } else {
+                            desc += "Fine melee weapon (uses either STR or DEX to hit and damage)\n";
+                        }
                     }
                     else{
                         desc += "Ranged weapon (uses DEX to hit)\n";

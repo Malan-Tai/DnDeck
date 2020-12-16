@@ -21,6 +21,8 @@ public class Player extends GameCharacter {
             0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000
     };
 
+    private int deathNumber = 0;
+
     public Player(String n, PlayerClass cl, PlayerRace race, Spell[] sp, int[] attr, int hits){
         super(n, sp, attr, hits);
         playerClass = cl;
@@ -63,6 +65,7 @@ public class Player extends GameCharacter {
             playerRace = new PlayerRace(json.getString("race"));
             level = json.getInt("level");
             hp = json.getInt("current_hp");
+            deathNumber = json.getInt("death_number");
 
             JSONArray deckJson = json.getJSONArray("deck");
             deck = new ArrayList<>();
@@ -280,12 +283,33 @@ public class Player extends GameCharacter {
 
     public int levelUp() {
         level++;
+        deathNumber = 0;
 
         int bonusHP = Math.max(1, Utils.rollDie(playerClass.hitDie) + modifiers[attributes[2]]);
         maxHP += bonusHP;
         hp = maxHP;
 
         return bonusHP;
+    }
+
+    public void postCombatHeal() {
+        hp += maxHP / 10;
+        hp = Math.min(hp, maxHP);
+    }
+
+    public boolean die() {
+        int failures = 0;
+        int successes = 0;
+        int d = deathNumber;
+        deathNumber++;
+
+        while (failures < 3 - d && successes < 3){
+            int saving = Utils.rollDie(20);
+            if (saving >= 10) successes++;
+            else failures++;
+        }
+
+        return failures == 3 - d;
     }
 
     @Override
@@ -297,6 +321,7 @@ public class Player extends GameCharacter {
             json.put("race", playerRace.name);
             json.put("class", playerClass.toJSON());
             json.put("current_hp", hp);
+            json.put("death_number", deathNumber);
 
             JSONArray deckJson = new JSONArray();
             for (int i = 0; i < deck.size(); i++){

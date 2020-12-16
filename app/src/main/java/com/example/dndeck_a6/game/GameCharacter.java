@@ -267,6 +267,10 @@ public class GameCharacter {
     public int getAttribute(String attr){
         int i = 0;
         switch (attr){
+            case "FINE":
+                if (attributes[0] >= attributes[1]) i = 0;
+                else i = 1;
+                break;
             case "STR":
                 i = 0;
                 break;

@@ -110,6 +110,7 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
             boolean lvlUp = MainActivity.player.gainXP(CombatActivity.monster.getXP());
             EncounterChoiceActivity.clearMonsters();
             CombatActivity.monster = null;
+            MainActivity.player.postCombatHeal();
 
             Intent intent;
             if (!lvlUp) {
@@ -122,13 +123,27 @@ public class CombatTurnTask extends AsyncTask<Void, SpellCast, Void> {
             activityReference.get().finish();
         }
         else if (MainActivity.player.getHp() <= 0){
-            Log.i("Malan", "player killed");
-            EncounterChoiceActivity.clearMonsters();
-            CombatActivity.monster = null;
-            MainActivity.deleteSave(MainActivity.currentSave);
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            activityReference.get().startActivity(intent);
+            boolean death = MainActivity.player.die();
+            if (death) {
+                Log.i("Malan", "player killed");
+                Toast.makeText(context, "You were killed by " + CombatActivity.monster.getName() + ".", Toast.LENGTH_SHORT).show();
+                EncounterChoiceActivity.clearMonsters();
+                CombatActivity.monster = null;
+                MainActivity.deleteSave(MainActivity.currentSave);
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activityReference.get().startActivity(intent);
+            } else {
+                Log.i("Malan", "player survived");
+                Toast.makeText(context, "You fell unconscious but woke up.", Toast.LENGTH_SHORT).show();
+                EncounterChoiceActivity.clearMonsters();
+                CombatActivity.monster = null;
+                MainActivity.player.postCombatHeal();
+
+                Intent intent = new Intent(context, EncounterChoiceActivity.class);
+                activityReference.get().startActivity(intent);
+                activityReference.get().finish();
+            }
         }
 
     }

@@ -7,6 +7,7 @@ import com.example.dndeck_a6.Utils;
 import com.example.dndeck_a6.activities.CombatActivity;
 import com.example.dndeck_a6.activities.MainActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,11 +26,28 @@ public class Weapon extends Spell {
 
             desc = "";
             if (json.getString("weapon_range").equals("Melee")){
-                desc += "Melee weapon (uses STR to hit)\n";
-                abilityToHit = "STR";
+                boolean fine = false;
+                try {
+                    JSONArray properties = json.getJSONArray("properties");
+                    for (int i = 0; i < properties.length(); i++){
+                        if (properties.getJSONObject(i).getString("index").equals("finesse")){
+                            fine = true;
+                            break;
+                        }
+                    }
+                }
+                catch (JSONException e) { }
+
+                if (!fine) {
+                    desc += "Melee weapon (uses STR to hit and damage)\n";
+                    abilityToHit = "STR";
+                } else {
+                    desc += "Fine melee weapon (uses either STR or DEX to hit and damage)\n";
+                    abilityToHit = "FINE";
+                }
             }
-            else{
-                desc += "Ranged weapon (uses DEX to hit)\n";
+            else {
+                desc += "Ranged weapon (uses DEX to hit and damage)\n";
                 abilityToHit = "DEX";
             }
 
@@ -54,19 +72,22 @@ public class Weapon extends Spell {
         GameCharacter target = CombatActivity.monster;
         if (target == null) return;
 
-        boolean hit = false;
-        int hitRoll = 0;
-        hitRoll = Utils.rollDie(20) + GameCharacter.modifiers[MainActivity.player.getAttribute(abilityToHit)];
-        hit = hitRoll >= target.armorClass;
+        int modifier = GameCharacter.modifiers[MainActivity.player.getAttribute(abilityToHit)];
+        int hitRoll = Utils.rollDie(20) + modifier;
+        boolean crit = hitRoll - modifier == 20;
+        boolean hit = (hitRoll >= target.armorClass || crit) && !(hitRoll - modifier == 1); // taking into account critical failures and successes
+
+        String critString = "";
+        if (crit || hitRoll - modifier == 1) critString = " critically";
 
         if (!hit) {
-            Toast.makeText(context, name + " missed " + target.name + "!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, name + critString + " missed " + target.name + "!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int damage = 0;
+        int damage = modifier;
         for (int i = 0; i < damageRolls.length; i++){
-            damage += Utils.rollDice(damageRolls[i]);
+            damage += Utils.rollDice(damageRolls[i], crit, true);
         }
 
         String bonusRoll = "";
@@ -77,7 +98,7 @@ public class Weapon extends Spell {
         else bonusRoll = "1d" + value;
         damage += Utils.rollDice(bonusRoll);
 
-        Toast.makeText(context, name + " hit " + target.name + " for " + damage + " damage!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, name + critString + " hit " + target.name + " for " + damage + " damage!", Toast.LENGTH_SHORT).show();
         target.takeDamage(damage);
     }
 
@@ -89,10 +110,18 @@ public class Weapon extends Spell {
             json.put("name", name);
             json.put("suit", suit);
 
-            if (abilityToHit.equals("STR")){
+            if (abilityToHit.equals("FINE")){
+                json.put("weapon_range", "Melee");
+                JSONObject fine = new JSONObject();
+                fine.put("index", "finesse");
+                JSONArray properties = new JSONArray();
+                properties.put(fine);
+                json.put("properties", properties);
+            }
+            else if (abilityToHit.equals("STR")){
                 json.put("weapon_range", "Melee");
             }
-            else{
+            else {
                 json.put("weapon_range", "Ranged");
             }
 

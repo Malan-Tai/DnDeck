@@ -17,7 +17,9 @@ public class Utils {
         return 1 + random.nextInt(n);
     }
 
-    public static int rollDice(String ndkpb){
+    public static int rollDice(String ndkpb) { return rollDice(ndkpb, false, false); }
+
+    public static int rollDice(String ndkpb, boolean crit, boolean player){
         String[] values = ndkpb.split("d");
         if (values.length == 1) return Integer.parseInt(values[0]); //if the string is only "1" or "16" for example
 
@@ -33,12 +35,15 @@ public class Utils {
             k = Integer.parseInt(values[1]);
         }
 
+        if (crit && !player) b = averageDice(ndkpb); // crit damage for a monster (rolled dice + avg dmg)
+
         int sum = b;
         for (int i = 0; i < n; i++){
             sum += rollDie(k);
+            if (crit && player) sum += rollDie(k); // crit damage for the player (rolled twice the dice + modifiers)
         }
 
-        Log.i("Malan", "rolled " + ndkpb + " = " + sum);
+        Log.i("Malan", "rolled (crit:" + crit +") " + ndkpb + " = " + sum);
         return sum;
     }
 

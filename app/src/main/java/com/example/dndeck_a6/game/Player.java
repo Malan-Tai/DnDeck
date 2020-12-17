@@ -293,6 +293,7 @@ public class Player extends GameCharacter {
     }
 
     public void postCombatHeal() {
+        if (hp <= 0) hp = 0;
         hp += maxHP / 10;
         hp = Math.min(hp, maxHP);
     }

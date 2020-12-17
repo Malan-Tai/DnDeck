@@ -3,6 +3,29 @@
     <string name="load_game">Load Game</string>
     <string name="new_game">New Game</string>
 
+    <!-- how to play -->
+    <string name="howToTitle">How To Play</string>
+    <string name="howToIntro">DnDeck is an adaptation of the DnD game in a mobile card game.</string>
+    <string name="howToAbilities">Your character has six abilities :\n
+        STR is your strength, used to hit and damage enemies with melee weapons \n
+        DEX is your dexterity, used to hit and damage enemies with ranged weapons \n
+        CON is your constitution, used to determine how much health you have \n
+        INT is your intelligence, used by some classes to cast spells \n
+        WIS is your wisdom, seldom used in this early version \n
+        CHA is your charisma, used by other classes to cast spells.</string>
+    <string name="howToRaceClass">When creating a character, your race will give you some ability bonuses, while your class will determine what weapons and spells you will have access to, as well as determining your hit die,
+        used when levelling up to gain bonus health.</string>
+    <string name="howToCard">Once your character is created, the combat commences. The four weapons and spells you will have chosen are assigned to a card suit. Playing a card of a given suit will use the corresponding
+        spell or weapon to try and damage the enemy. The bigger the value of the card, the more damage it will deal.</string>
+    <string name="howToTurn">Each turn, you and your enemy will draw cards in your or their deck, until both of you have six cards in hand. Then, you will simultaneously choose up to three cards to play. Once you have chosen,
+        hit the "End turn" button. It will play all the chosen cards, starting with your first one, then the enemy\'s first one, and so on.</string>
+    <string name="howToDeath">If you hit 0HP against an enemy, you have a chance to survive and continue playing. This chance decreases as you die, until you level up, where it is reset. If you die though,
+        your save will be deleted.</string>
+    <string name="howToLevel">When levelling up, you can choose one card among four to add to your deck. You can also choose to disable some cards if you deem them not useful. But you must have a minimum of twelve enabled
+        cards at all times.</string>
+
+    <string name="prev">Prev</string>
+
     <!-- new game activity -->
     <string name="playerName">Name</string>
     <string name="playerRace">Race :</string>

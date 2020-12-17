@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DnDeck_A6">
         <activity
+            android:name=".activities.HowToPlayActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
+        <activity
             android:name=".activities.LevelUpActivity"
             android:screenOrientation="portrait" />
         <activity

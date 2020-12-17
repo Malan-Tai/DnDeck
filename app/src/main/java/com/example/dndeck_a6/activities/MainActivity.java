@@ -57,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
         database = new Database(getApplicationContext());
 
+        Button howTo = (Button)findViewById(R.id.buttonHowTo);
+        howTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), HowToPlayActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Button newGame = (Button)findViewById(R.id.buttonNewGame);
         newGame.setOnClickListener(new View.OnClickListener() {
             @Override
